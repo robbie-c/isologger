@@ -1,6 +1,6 @@
 {
   "name": "isologger",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An isomorphic JavaScript logger",
   "main": "src/isologger.js",
   "scripts": {
