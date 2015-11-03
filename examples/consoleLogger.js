@@ -10,7 +10,6 @@ var consoleOutput = new IsoLogger.ConsoleOutput();
 logger.addOutput('log', consoleOutput);
 
 logger.info('hello');
-
-logger.error(new Error()); // most consoles don't format this well
-
+logger.error(new Error('My Message'));
 logger.warn('Warn about this array', [1, 2, 3]);
+logger.log({a: 1});
