@@ -1,5 +1,4 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.IsoLogger = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-
 var levels = {
   notset: 'notset',
   debug: 'debug',
@@ -7,15 +6,6 @@ var levels = {
   info: 'info',
   warn: 'warn',
   error: 'error'
-};
-
-var levelNumericToString = {
-  0: 'notset',
-  10: 'debug',
-  15: 'log',
-  20: 'info',
-  30: 'warn',
-  40: 'error'
 };
 
 var levelStringToNumeric = {
@@ -65,7 +55,6 @@ function Logger(opts) {
 }
 
 Logger.prototype.addOutput = function (level, output) {
-  console.log('add ouput', level, output);
   this.outputs.push([level, output]);
 };
 Logger.prototype._createLogEvent = function (level, args, callSite) {
@@ -86,7 +75,6 @@ Logger.prototype._myPrepareStackTrace = function (_, stack) {
   return stack;
 };
 Logger.prototype._getCallerCallSite = function () {
-  console.log('try to get frame', Error.captureStackTrace, Error.prepareStackTrace );
   if (Error.captureStackTrace) {
     var err = new Error();
 
@@ -95,8 +83,6 @@ Logger.prototype._getCallerCallSite = function () {
     Error.captureStackTrace(err, null);
     var stack = err.stack;
     Error.prepareStackTrace = originalPrepareStackTrace;
-
-    console.log('got frame');
 
     // we want the caller's caller
     return stack[2];
@@ -124,19 +110,15 @@ Logger.prototype.error = function () {
 };
 
 Logger.prototype.produce = function (logEvent) {
-  console.log('produce');
   this.outputs.forEach(function (arr) {
     var level = arr[0];
     var output = arr[1];
-    console.log('got output with', level);
     if (shouldReceive(logEvent.level, level)) {
       if (typeof output === 'function') {
         output(logEvent);
       } else if (typeof output.consume === 'function') {
         output.consume(logEvent);
       }
-    } else {
-      console.log('should not receive');
     }
   });
 };
@@ -144,11 +126,10 @@ Logger.prototype.produce = function (logEvent) {
 function shouldReceive(eventLogLevel, outputLogLevel) {
   var eventNumeric = levelStringToNumeric[eventLogLevel];
   var outputNumeric = levelStringToNumeric[outputLogLevel];
-  console.log(eventNumeric, outputNumeric);
   return (eventNumeric >= outputNumeric) || outputNumeric === levels.notset;
 }
 
-function ConsoleOutput () {
+function ConsoleOutput() {
 }
 ConsoleOutput.prototype.consume = function consume(logEvent) {
 
@@ -158,27 +139,26 @@ ConsoleOutput.prototype.consume = function consume(logEvent) {
     var func;
     switch (logEvent.level) {
       case levels.error:
-        func = console.error;
+        func = console.error; // eslint-disable-line no-console
         break;
       case levels.warn:
-        func = console.warn;
+        func = console.warn; // eslint-disable-line no-console
         break;
       case levels.info:
-        func = console.info;
+        func = console.info; // eslint-disable-line no-console
         break;
       case levels.log:
-        func = console.log;
+        func = console.log; // eslint-disable-line no-console
         break;
       case levels.debug:
-        func = console.debug;
+        func = console.debug; // eslint-disable-line no-console
         break;
       default:
-        func = console.log;
+        func = console.log; // eslint-disable-line no-console
         args.push(logEvent.level);
         break;
     }
 
-    console.log('timestamp', logEvent.timestamp);
     if (logEvent.timestamp) {
       args.push(logEvent.timestamp);
     }
